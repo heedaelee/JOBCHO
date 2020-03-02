@@ -1,7 +1,7 @@
 <h1 align = "center">JOBCHO</h1>
+<h5 align = "center"> JOBCHO never die even though tread, distress, and so on.</h5>
 <p align="center">
 <img src="image/jobcho_logo.png" width="10%" height="10%"></br>
-<h6 align = "center"> JOBCHO never die even though tread, distress, and so on.</h6>
 </p>
 
 <h2 align="center">Overview</h2>
