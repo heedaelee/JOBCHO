@@ -39,6 +39,7 @@ class CWidget(QWidget):
  
     def initUI(self):
         self.connect_status = 0
+        self.pause_status = 0
 
         self.menu = QVBoxLayout()
 
@@ -101,6 +102,13 @@ class CWidget(QWidget):
         self.threshold_slider = QSlider(Qt.Horizontal) 
         self.threshold_slider.setRange(0, 300)
         
+        self.pause_button = QPushButton("pause")
+        self.pause_button.resize(260, 464)
+        #self.save_button.move(150,50)
+        self.pause_button.setStyleSheet("""
+            QPushButton { background-color: #2E3D50;color:#ffffff; border:  1px solid white; font-weight: regular; font-size: 15pt;font-family: Calibri;}
+            QPushButton:hover{ background-color: #2E3D50; color:#ffffff;border: 3px solid white; font-weight: bold; font-size: 15pt;font-family: Calibri;}
+            """)
 
         #self.verticalSpacer = QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
 
@@ -118,6 +126,8 @@ class CWidget(QWidget):
         self.menu.addWidget(self.threshold_slider)
         self.menu.addSpacing(50)
         self.menu.addWidget(self.save_button)
+        self.menu.addSpacing(5)
+        self.menu.addWidget(self.pause_button)
 
         self.menu.setSpacing(0)
         self.menu.setContentsMargins(0,0,0,0)
@@ -133,6 +143,7 @@ class CWidget(QWidget):
 
         self.connect_button.clicked.connect(self.port_connect)
         self.save_button.clicked.connect(self.save_csv)
+        self.pause_button.clicked.connect(self.pause)
         self.threshold_slider.setValue(0)
         self.threshold_slider.valueChanged.connect(self.threshold_slider_value_changed)
         self.threshold_value.textChanged.connect(self.threshold_value_changed)
@@ -178,6 +189,12 @@ class CWidget(QWidget):
                 print("port error")
         
 
+    def pause(self):
+        if self.pause_status == 0:
+            self.pause_status = 1
+
+        elif self.pause_status == 1:
+            self.pause_status = 0
 
     def save_csv(self,):
         f = open('./data/{}.csv'.format(datetime.datetime.now().strftime("%m-%d-%Y-%H-%M-%S")), 'w', encoding='utf-8', newline='')
@@ -269,17 +286,23 @@ class CWidget(QWidget):
             #    print(data)
 
     def updatefig(self,*args):
-        if self.connect_status ==1 :
-            c= self.receive_data()
-        
-        if self.connect_status == 0:
-            c = np.random.uniform(0,1,(64,32))
-        
-        c = self.Sensitivity(c)
-        c = self.Threshold(c)
-        self.data = c  
-        self.im.set_array(self.data)
-        return self.im,
+        if self.pause_status == 0:
+
+            if self.connect_status ==1 :
+                self.display_data= self.receive_data()
+            
+            if self.connect_status == 0:
+                self.display_data = np.random.uniform(0,1,(64,32))
+            
+            self.display_data = self.Sensitivity(self.display_data)
+            self.display_data = self.Threshold(self.display_data)
+            self.data = self.display_data  
+            self.im.set_array(self.data)
+            return self.im,
+
+        if self.pause_status == 1:
+            self.im.set_array(self.data)
+            return self.im,
 
     def Sensitivity(self, data):
         return np.power(self.sense_slider.value(), data)
