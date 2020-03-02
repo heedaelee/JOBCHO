@@ -40,6 +40,7 @@ class CWidget(QWidget):
     def initUI(self):
         self.connect_status = 0
         self.pause_status = 0
+        self.record_status = 0
 
         self.menu = QVBoxLayout()
 
@@ -59,12 +60,17 @@ class CWidget(QWidget):
         
 
         self.connect_button = QPushButton("Connect")
-        self.connect_button.resize(260, 464)
+        
         #self.save_button.move(150,50)
         self.connect_button.setStyleSheet("""
             QPushButton { background-color: #2E3D50;color:#ffffff; border:  1px solid white; font-weight: regular; font-size: 15pt;font-family: Calibri;}
             QPushButton:hover{ background-color: #2E3D50; color:#ffffff;border: 3px solid white; font-weight: bold; font-size: 15pt;font-family: Calibri;}
             """)
+        self.connect_button.setStyleSheet("""
+            QPushButton { background-color: #2E3D50;color:#ffffff; border:  1px solid white; font-weight: regular; font-size: 15pt;font-family: Calibri;}
+            QPushButton:hover{ background-color: #2E3D50; color:#ffffff;border: 3px solid white; font-weight: bold; font-size: 15pt;font-family: Calibri;}
+            """)
+        self.connect_button.resize(260, 464)
 
         self.sense_label = QLabel(self)
         self.sense_label.setText('Sensitivity')
@@ -76,13 +82,15 @@ class CWidget(QWidget):
         self.threshold_label.setAlignment(Qt.AlignCenter)
         self.threshold_label.setStyleSheet("QLabel { background-color: #2E3D50;color:#ffffff; border: none; font-weight: regular; font-size: 15pt;font-family: Calibri;}")
 
-        self.save_button = QPushButton("save")
-        self.save_button.resize(260, 464)
+        self.save_button = QPushButton("Save")
+        
         #self.save_button.move(150,50)
         self.save_button.setStyleSheet("""
             QPushButton { background-color: #2E3D50;color:#ffffff; border:  1px solid white; font-weight: regular; font-size: 15pt;font-family: Calibri;}
             QPushButton:hover{ background-color: #2E3D50; color:#ffffff;border: 3px solid white; font-weight: bold; font-size: 15pt;font-family: Calibri;}
             """)
+            
+        self.save_button.resize(260, 464)
         # self.logo_button.setStyleSheet("QPushButton{image:url(./image/logo.png); border:0px;}")
 
         self.sense_value = QLineEdit("100")
@@ -102,13 +110,23 @@ class CWidget(QWidget):
         self.threshold_slider = QSlider(Qt.Horizontal) 
         self.threshold_slider.setRange(0, 300)
         
-        self.pause_button = QPushButton("pause")
-        self.pause_button.resize(260, 464)
+        self.pause_button = QPushButton("Pause")
+        
         #self.save_button.move(150,50)
         self.pause_button.setStyleSheet("""
             QPushButton { background-color: #2E3D50;color:#ffffff; border:  1px solid white; font-weight: regular; font-size: 15pt;font-family: Calibri;}
             QPushButton:hover{ background-color: #2E3D50; color:#ffffff;border: 3px solid white; font-weight: bold; font-size: 15pt;font-family: Calibri;}
             """)
+        #self.pause_button.resize(260, 464)
+
+        self.record_button = QPushButton("Record")
+        
+        #self.save_button.move(150,50)
+        self.record_button.setStyleSheet("""
+            QPushButton { background-color: #2E3D50;color:#ffffff; border:  1px solid white; font-weight: regular; font-size: 15pt;font-family: Calibri;}
+            QPushButton:hover{ background-color: #2E3D50; color:#ffffff;border: 3px solid white; font-weight: bold; font-size: 15pt;font-family: Calibri;}
+            """)
+        #self.record_button.resize(260, 464)
 
         #self.verticalSpacer = QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
 
@@ -126,8 +144,10 @@ class CWidget(QWidget):
         self.menu.addWidget(self.threshold_slider)
         self.menu.addSpacing(50)
         self.menu.addWidget(self.save_button)
-        self.menu.addSpacing(5)
+        self.menu.addSpacing(10)
         self.menu.addWidget(self.pause_button)
+        self.menu.addSpacing(10)
+        self.menu.addWidget(self.record_button)
 
         self.menu.setSpacing(0)
         self.menu.setContentsMargins(0,0,0,0)
@@ -144,6 +164,7 @@ class CWidget(QWidget):
         self.connect_button.clicked.connect(self.port_connect)
         self.save_button.clicked.connect(self.save_csv)
         self.pause_button.clicked.connect(self.pause)
+        self.record_button.clicked.connect(self.record)
         self.threshold_slider.setValue(0)
         self.threshold_slider.valueChanged.connect(self.threshold_slider_value_changed)
         self.threshold_value.textChanged.connect(self.threshold_value_changed)
@@ -188,13 +209,38 @@ class CWidget(QWidget):
             except:
                 print("port error")
         
+    def record(self):
+        if self.record_status == 0:
+            self.record_status = 1
+            self.record_button.setStyleSheet("""
+            QPushButton {  background-color: #2E3D50; color:#ffffff;border: 3px solid white; font-weight: bold; font-size: 15pt;font-family: Calibri;}
+            """)
+
+            self.record_file_name = './data/{}.csv'.format(datetime.datetime.now().strftime("%m-%d-%Y-%H-%M-%S"))
+        
+        elif self.record_status == 1:
+            self.record_status = 0
+            self.record_button.setStyleSheet("""
+            QPushButton { background-color: #2E3D50;color:#ffffff; border:  1px solid white; font-weight: regular; font-size: 15pt;font-family: Calibri;}
+            QPushButton:hover{ background-color: #2E3D50; color:#ffffff;border: 3px solid white; font-weight: bold; font-size: 15pt;font-family: Calibri;}
+            """)
+
 
     def pause(self):
         if self.pause_status == 0:
             self.pause_status = 1
+            self.pause_button.setStyleSheet("""
+            QPushButton {  background-color: #2E3D50; color:#ffffff;border: 3px solid white; font-weight: bold; font-size: 15pt;font-family: Calibri;}
+            """)
+
 
         elif self.pause_status == 1:
             self.pause_status = 0
+            self.pause_button.setStyleSheet("""
+            QPushButton { background-color: #2E3D50;color:#ffffff; border:  1px solid white; font-weight: regular; font-size: 15pt;font-family: Calibri;}
+            QPushButton:hover{ background-color: #2E3D50; color:#ffffff;border: 3px solid white; font-weight: bold; font-size: 15pt;font-family: Calibri;}
+            """)
+
 
     def save_csv(self,):
         f = open('./data/{}.csv'.format(datetime.datetime.now().strftime("%m-%d-%Y-%H-%M-%S")), 'w', encoding='utf-8', newline='')
@@ -202,6 +248,8 @@ class CWidget(QWidget):
 
         for i in range(64):
             wr.writerow(self.data[i])
+
+        f.close()
 
 
     def onChanged(self, text):
@@ -285,6 +333,14 @@ class CWidget(QWidget):
             #else :
             #    print(data)
 
+    def save_data(self, filename):
+        f = open(filename, 'a', encoding='utf-8', newline='')
+        wr = csv.writer(f)
+        
+        wr.writerow('{}'.format(datetime.datetime.now().strftime("%m-%d-%Y-%H-%M-%S")))
+        for i in range(64):
+            wr.writerow(self.data[i])
+
     def updatefig(self,*args):
         if self.pause_status == 0:
 
@@ -297,11 +353,17 @@ class CWidget(QWidget):
             self.display_data = self.Sensitivity(self.display_data)
             self.display_data = self.Threshold(self.display_data)
             self.data = self.display_data  
+            
             self.im.set_array(self.data)
+            print(self.record_status)
+            if self.record_status == 1: 
+                self.save_data(self.record_file_name)
             return self.im,
 
         if self.pause_status == 1:
             self.im.set_array(self.data)
+            if self.record_status == 1: 
+                self.save_data(self.record_file_name)
             return self.im,
 
     def Sensitivity(self, data):
