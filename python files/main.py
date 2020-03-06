@@ -189,7 +189,7 @@ class CWidget(QWidget):
         # self.line, = self.ax.plot(self.x, self.y)        
  
         # 애니메이션 챠트 생성
-        #self.ani = animation.FuncAnimation(self.fig, self.updatefig, blit=True)
+        #self.ani = animation.FuncAnimaXtion(self.fig, self.updatefig, blit=True)
         #self.canvas.draw()
         print(self.canvas.size())
         self.ani = animation.FuncAnimation(self.fig, self.updatefig, blit=True)
@@ -381,6 +381,11 @@ class CWidget(QWidget):
             self.display_data = self.Sensitivity(self.display_data)
             self.display_data = self.Threshold(self.display_data)
             self.data = self.display_data  
+
+            #for test start
+            self.data[19] = self.data[18]
+
+            #for test end
             
             self.im.set_array(self.data)
             #
@@ -406,3 +411,6 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     w = CWidget()
     sys.exit(app.exec_())
+
+
+    #hi~~
