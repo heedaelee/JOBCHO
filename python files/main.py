@@ -26,8 +26,8 @@ class CWidget(QWidget):
         self.fig = plt.Figure()
         self.ax = self.fig.add_subplot(111)      
         
-        self.im = self.ax.imshow(self.arr[0], animated=True, vmin=0, vmax=100)
-        self.fig.colorbar(self.im,label='pressure(mmHg)')
+        self.im = self.ax.imshow(self.arr[0], animated=True, vmin=0, vmax=5)
+        self.fig.colorbar(self.im,label='pressure')
         self.canvas = FigureCanvasQTAgg(self.fig)
         
 
@@ -126,9 +126,11 @@ class CWidget(QWidget):
             QPushButton { background-color: #2E3D50;color:#ffffff; border:  1px solid white; font-weight: regular; font-size: 15pt;font-family: Calibri;}
             QPushButton:hover{ background-color: #2E3D50; color:#ffffff;border: 3px solid white; font-weight: bold; font-size: 15pt;font-family: Calibri;}
             """)
-        #self.record_button.resize(260, 464)
-
-        #self.verticalSpacer = QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        
+        self.status_notice  = QLineEdit()
+        self.status_notice.setStyleSheet("""
+            QLineEdit { background-color: #2E3D50;color:#ffffff; border:  0px solid white; font-weight: regular; font-size: 10pt;font-family: Calibri;}
+            """)
 
         self.menu.addWidget(self.combo_label)
         self.menu.addWidget(self.combo)
@@ -148,6 +150,8 @@ class CWidget(QWidget):
         self.menu.addWidget(self.pause_button)
         self.menu.addSpacing(10)
         self.menu.addWidget(self.record_button)
+        self.menu.addSpacing(10)
+        self.menu.addWidget(self.status_notice)
 
         self.menu.setSpacing(0)
         self.menu.setContentsMargins(0,0,0,0)
@@ -201,6 +205,8 @@ class CWidget(QWidget):
                 stopbits=serial.STOPBITS_ONE
                 )
             self.connect_status = 1
+
+            self.status_notice.setText("{} connected".format(self.port_num))
         except:
             try : 
                 print(self.port_num)
@@ -208,38 +214,49 @@ class CWidget(QWidget):
                 
             except:
                 print("port error")
-        
+                
+                
     def record(self):
         if self.record_status == 0:
             self.record_status = 1
+
+            self.record_button.setText("Stop")
             self.record_button.setStyleSheet("""
-            QPushButton {  background-color: #2E3D50; color:#ffffff;border: 3px solid white; font-weight: bold; font-size: 15pt;font-family: Calibri;}
+            QPushButton { background-color: #2E3D50; color:#ffffff;border: 3px solid white; font-weight: bold; font-size: 15pt;font-family: Calibri;}
             """)
 
             self.record_file_name = './data/{}.csv'.format(datetime.datetime.now().strftime("%m-%d-%Y-%H-%M-%S"))
+
+            self.status_notice.setText("recording")
         
         elif self.record_status == 1:
             self.record_status = 0
+            self.record_button.setText("Record")
             self.record_button.setStyleSheet("""
             QPushButton { background-color: #2E3D50;color:#ffffff; border:  1px solid white; font-weight: regular; font-size: 15pt;font-family: Calibri;}
             QPushButton:hover{ background-color: #2E3D50; color:#ffffff;border: 3px solid white; font-weight: bold; font-size: 15pt;font-family: Calibri;}
             """)
 
+            self.status_notice.setText("record finished")
 
     def pause(self):
         if self.pause_status == 0:
             self.pause_status = 1
+            self.pause_button.setText("Resume")
             self.pause_button.setStyleSheet("""
             QPushButton {  background-color: #2E3D50; color:#ffffff;border: 3px solid white; font-weight: bold; font-size: 15pt;font-family: Calibri;}
             """)
+            self.status_notice.setText("paused")
 
 
         elif self.pause_status == 1:
             self.pause_status = 0
+            self.pause_button.setText("Pause")
             self.pause_button.setStyleSheet("""
             QPushButton { background-color: #2E3D50;color:#ffffff; border:  1px solid white; font-weight: regular; font-size: 15pt;font-family: Calibri;}
             QPushButton:hover{ background-color: #2E3D50; color:#ffffff;border: 3px solid white; font-weight: bold; font-size: 15pt;font-family: Calibri;}
             """)
+            self.status_notice.setText("resume")
 
 
     def save_csv(self,):
@@ -253,7 +270,7 @@ class CWidget(QWidget):
 
 
     def onChanged(self, text):
-        print(text)
+        #print(text)
         self.port_num = text
 
         
@@ -327,7 +344,10 @@ class CWidget(QWidget):
                 elif 'c' in data and temp==1:
                     data_set = np.vstack([data_set, data[1:]])
                     #print(data_set.shape)
-                    return data_set
+                    if data_set.shape == (64,32):
+                        return data_set
+                    else : 
+                        continue
             except:
                 continue    
             #else :
@@ -337,9 +357,17 @@ class CWidget(QWidget):
         f = open(filename, 'a', encoding='utf-8', newline='')
         wr = csv.writer(f)
         
-        wr.writerow('{}'.format(datetime.datetime.now().strftime("%m-%d-%Y-%H-%M-%S")))
+        
+        f.write('{}\n'.format(datetime.datetime.now().strftime("%m-%d-%Y-%H-%M-%S")))
+        
+        
         for i in range(64):
             wr.writerow(self.data[i])
+        
+        if self.record_status == 1:
+            pass
+        elif self.record_status == 0:
+            self.status_notice.setText("saved")
 
     def updatefig(self,*args):
         if self.pause_status == 0:
@@ -355,7 +383,8 @@ class CWidget(QWidget):
             self.data = self.display_data  
             
             self.im.set_array(self.data)
-            print(self.record_status)
+            #
+            # print(self.record_status)
             if self.record_status == 1: 
                 self.save_data(self.record_file_name)
             return self.im,
