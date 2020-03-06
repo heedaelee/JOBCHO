@@ -26,5 +26,9 @@ This repository has source of project, "JOBCHO".<br>
 </p>
 
 <p align="center">
-First, you have to connect flat wire to sensor mat.
-<img src="image/quick_start_1.png" width="10%" height="10%"></br>
+1. First, you have to connect flat wire to sensor mat.</br>
+  <img src="image/quick_start_1.PNG" width="50%" height="50%"></br>
+<p align="center">
+2. Next, connect USB cable to your computer.</br>
+3. execute ./python files/main.py or execute main.exe file.</br>
+4. select your arduino port.
