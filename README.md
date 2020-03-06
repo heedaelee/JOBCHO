@@ -25,3 +25,6 @@ This repository has source of project, "JOBCHO".<br>
 
 </p>
 
+<p align="center">
+First, you have to connect flat wire to sensor mat.
+<img src="image/quick_start_1.png" width="10%" height="10%"></br>
