@@ -265,6 +265,7 @@ class CWidget(QWidget):
 
         for i in range(64):
             wr.writerow(self.data[i])
+            
 
         f.close()
 
