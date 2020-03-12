@@ -1,3 +1,13 @@
+<style>
+		html, body {width: 100%; height: 100%;}
+		.container {width: 70%; height: 70%; margin: 40px auto; background: #cc0033;}
+		.outer {display: table; width: 100%; height: 100%; }
+		.inner {display:table-cell; vertical-align: middle; text-align: center;}
+		.centered {position: relative; display: inline-block; width: 50%; height: 30%; padding: 1em; background: #ccff66; color:#336699; text-align:left;}
+
+</style>
+
+
 <h1 align = "center">JOBCHO</h1>
 <p align="center">
 <img src="image/jobcho_logo.png" width="10%" height="10%"></br>
@@ -42,30 +52,3 @@ This repository has source of project, "JOBCHO".<br>
   <img src="image/quick_start_5.PNG" width="50%" height="50%"></br>
 <p align="center">
 6. adjust two parameter(sensitivity, threshold) to remove noise, and amplify signal.</br>
-Our team found some optimized value for two value.</br>
-
-<div align = "center">
-  
-  <table>
-      <thead>
-          <tr>
-              <th align="center">motion</th>
-              <th align="center">sensitivity</th>
-              <th align="center">threshold</th>
-          </tr>
-      </thead>
-      <tbody>
-          <tr>
-              <td align="center">walking</td>
-              <td align="center">30</td>
-              <td align="center">200</td>
-         </tr>
-          <tr>
-              <td align="center">lying</td>
-              <td align="center">40</td>
-              <td align="center">200</td>
-          </tr>
-      </tbody>
-  </table>
-  
-</div>
