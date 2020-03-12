@@ -1,13 +1,3 @@
-<style>
-		html, body {width: 100%; height: 100%;}
-		.container {width: 70%; height: 70%; margin: 40px auto; background: #cc0033;}
-		.outer {display: table; width: 100%; height: 100%; }
-		.inner {display:table-cell; vertical-align: middle; text-align: center;}
-		.centered {position: relative; display: inline-block; width: 50%; height: 30%; padding: 1em; background: #ccff66; color:#336699; text-align:left;}
-
-</style>
-
-
 <h1 align = "center">JOBCHO</h1>
 <p align="center">
 <img src="image/jobcho_logo.png" width="10%" height="10%"></br>
