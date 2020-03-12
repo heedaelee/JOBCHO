@@ -20,7 +20,7 @@ class CWidget(QWidget):
         self.arr=[]
         
         for _ in range(5):
-            c=np.random.rand(64,32)
+            c=np.zeros([64,32])
             self.arr.append(c)
         # for PyQt embedding
         self.fig = plt.Figure()
@@ -377,7 +377,7 @@ class CWidget(QWidget):
                 self.display_data= self.receive_data()
             
             if self.connect_status == 0:
-                self.display_data = np.random.uniform(0,1,(64,32))
+                self.display_data = np.zeros((64,32))
             
             self.display_data = self.Sensitivity(self.display_data)
             self.display_data = self.Threshold(self.display_data)
